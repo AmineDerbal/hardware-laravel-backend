@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\LoginController;
 
 
 /*
@@ -24,4 +25,8 @@ use App\Http\Controllers\Api\RegisterController;
 Route::controller(RegisterController::class)->group(function () {
     Route::post('/register', 'register');
     Route::get('/verify/{token}', 'verifyEmail')->name('email.verify');
+});
+
+Route::controller(LoginController::class)->group(function () {
+    Route::post('/login', 'login');
 });
