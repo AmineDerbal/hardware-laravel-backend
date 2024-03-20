@@ -23,10 +23,10 @@ use App\Http\Controllers\Api\LoginController;
 
 
 Route::controller(RegisterController::class)->group(function () {
-    Route::post('/register', 'register');
-    Route::get('/verify/{token}', 'verifyEmail')->name('email.verify');
+    Route::post('auth/register', 'register');
+    Route::get('auth/verify/{token}', 'verifyEmail')->name('email.verify');
 });
 
 Route::controller(LoginController::class)->group(function () {
-    Route::post('/login', 'login');
+    Route::post('auth/login', 'login');
 });
