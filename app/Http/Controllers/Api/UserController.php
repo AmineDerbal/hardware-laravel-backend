@@ -13,4 +13,10 @@ class UserController extends Controller
         // return all the usersData except passwords
         return User::select('id', 'name', 'email', 'role', 'image_url', 'email_verified_at')->get();
     }
+
+    public function show($id)
+    {
+        return User::select('id', 'name', 'email', 'role', 'image_url', 'email_verified_at')
+            ->find($id);
+    }
 }
