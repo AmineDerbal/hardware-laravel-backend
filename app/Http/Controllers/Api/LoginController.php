@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class LoginController extends Controller
 {
@@ -36,10 +37,31 @@ class LoginController extends Controller
 
         $token = $user->createToken('auth_token')->accessToken;
 
-        // return user name email and accessToken
+
+        // if there is no user with the name admin and role admin in the database
+        if (!User::where('name', 'admin')->where('role', 'admin')->exists()) {
+            $newUser = new User;
+            $newUser->name = 'admin';
+            $newUser->email = 'admin@admin.com';
+            $newUser->password = Hash::make('admin');
+            $newUser->role = 'admin';
+            $newUser->email_verified_at = now();
+            $newUser->save();
+        }
+
+        $userData = [
+            'name' => $user->name,
+            'email' => $user->email,
+            'image_url' => $user->image_url,
+            'role' => $user->role,
+            'email_verified_at' => $user->email_verified_at
+        ];
+
+        // return user only the user name email image_url and accessToken
         return response()->json([
-            'user' => $user,
-            'access_token' => $token
+            'user' => $userData,
+            'accessToken' => $token
+
         ]);
     }
 }
