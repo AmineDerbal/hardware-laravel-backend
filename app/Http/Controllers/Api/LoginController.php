@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
+
 class LoginController extends Controller
 {
     public function login(Request $request)
@@ -30,11 +31,13 @@ class LoginController extends Controller
 
         $user = Auth::user();
         if ($user->email_verified_at == null) {
+            Auth::logout();
             return response()->json([
                 'message' => 'Email not verified'
             ], 401);
         }
-
+        // delete all previous tokens for this user and create a new one
+        $user->tokens()->delete();
         $token = $user->createToken('auth_token')->accessToken;
 
 
@@ -56,7 +59,7 @@ class LoginController extends Controller
             'role' => $user->role,
             'email_verified_at' => $user->email_verified_at
         ];
-
+        Auth::logout();
         // return user only the user name email image_url and accessToken
         return response()->json([
             'user' => $userData,
