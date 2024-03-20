@@ -20,7 +20,6 @@ class AdminCheck
         $user = Auth::user();
         if ($user && $user->role === 'admin') {
 
-            Auth::logout();
             return $next($request);
         }
 

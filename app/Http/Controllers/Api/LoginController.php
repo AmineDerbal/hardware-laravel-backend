@@ -59,7 +59,7 @@ class LoginController extends Controller
             'role' => $user->role,
             'email_verified_at' => $user->email_verified_at
         ];
-        Auth::logout();
+
         // return user only the user name email image_url and accessToken
         return response()->json([
             'user' => $userData,
