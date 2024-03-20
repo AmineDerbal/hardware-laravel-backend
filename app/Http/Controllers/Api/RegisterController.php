@@ -20,8 +20,6 @@ class RegisterController extends Controller
             'name' => 'required|string',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required',
-            'role' => 'sometimes|string',
-            'accessToken' => 'sometimes|string'
         ]);
 
         if ($validator->fails()) {
@@ -29,7 +27,7 @@ class RegisterController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
-        $isAdminUser = false;
+
 
         // create user
         $user = new User;
@@ -37,39 +35,6 @@ class RegisterController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->save();
-
-        // if access token check if user is admin
-        if (isset($request->accessToken)) {
-            $requestingAdminUser = User::where('access_token', $request->accessToken)->first();
-            if ($requestingAdminUser->role == 'admin') {
-                $isAdminUser = true;
-            }
-        }
-
-        // if role is set
-        if (isset($request->role) && $isAdminUser) {
-            $roleChoices = ['admin', 'user'];
-            if (!in_array($request->role, $roleChoices)) {
-                return response()->json([
-                    'errors' => [
-                        'role' => ['Invalid role']
-                    ]
-                ], 422);
-            }
-            $user->role = $request->role;
-            $user->save();
-        }
-
-        // if the user is an admin, we do not create or send an email verification the user is immediately activated
-        if ($isAdminUser) {
-            $user->email_verified_at = now();
-            $user->save();
-            return response()->json([
-                'success' => true,
-                'message' => 'User created and activated successfully',
-            ]);
-        }
-
         $token = Str::random(64);
 
         // if token already exists
