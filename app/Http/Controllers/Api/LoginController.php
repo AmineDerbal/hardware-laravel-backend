@@ -37,7 +37,7 @@ class LoginController extends Controller
             ], 401);
         }
         // delete all previous tokens for this user and create a new one
-        $user->tokens()->delete();
+
         $token = $user->createToken('auth_token')->accessToken;
 
 
