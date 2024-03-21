@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\UserController;
 Route::controller(RegisterController::class)->group(function () {
     Route::post('auth/register', 'register');
     Route::get('auth/verify/{token}', 'verifyEmail')->name('email.verify');
+    Route::post('auth/admin/register', 'registerNewUserByAdmin')->name('admin.register')->middleware(['auth:api', 'admin.check']);
 });
 
 Route::controller(LoginController::class)->group(function () {
